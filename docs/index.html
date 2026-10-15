@@ -11,8 +11,7 @@
 :root{
   --paper:#F3F6F4; --panel:#FFFFFF; --ink:#17323A; --muted:#5D7178; --line:#D6DFDC;
   --up:#2E7D5B; --down:#B5473A; --brass:#A87A14; --chip:#E7EEEB;
-  color-scheme:light;
-  box-sizing:border-box;
+  color-scheme:light; box-sizing:border-box;
   padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
 }
 @media (prefers-color-scheme:dark){
@@ -29,9 +28,10 @@ h1{font:600 2.1rem/1.1 "Newsreader",Georgia,serif;margin:0;letter-spacing:-.01em
 .mood{margin:22px 0 6px;font:400 1.35rem/1.35 "Newsreader",Georgia,serif;max-width:62ch}
 .mood b{font-weight:600}
 .lead{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px;margin:22px 0 36px}
-.leader{background:var(--panel);border:1px solid var(--line);border-left:6px solid var(--up);padding:16px 18px;border-radius:4px}
+.leader{background:var(--panel);border:1px solid var(--line);border-left:6px solid var(--up);padding:16px 18px;border-radius:4px;cursor:pointer}
 .leader .rank{color:var(--muted);font-size:.85rem}
 .leader .tk{font-size:1.9rem;font-weight:700;letter-spacing:.01em}
+.leader .nm{color:var(--muted);font-size:.9rem;margin-top:-2px}
 .leader .sc{float:right;font-size:2.4rem;font-weight:700;color:var(--up);line-height:1}
 .leader svg{display:block;width:100%;height:46px;margin-top:8px}
 .leader .why{font-size:.9rem;color:var(--muted);margin-top:6px}
@@ -40,21 +40,20 @@ h2{font:600 1.35rem/1.2 "Newsreader",Georgia,serif;margin:36px 0 12px}
 .controls button{font:inherit;font-size:.9rem;border:1px solid var(--line);background:var(--panel);color:var(--ink);padding:6px 12px;border-radius:999px;cursor:pointer}
 .controls button[aria-pressed="true"]{background:var(--ink);color:var(--paper);border-color:var(--ink)}
 .tablewrap{overflow-x:auto;background:var(--panel);border:1px solid var(--line);border-radius:4px}
-table{width:100%;border-collapse:collapse;min-width:720px;font-variant-numeric:tabular-nums}
+table{width:100%;border-collapse:collapse;min-width:760px;font-variant-numeric:tabular-nums}
 th,td{padding:10px 12px;text-align:right;border-bottom:1px solid var(--line);white-space:nowrap}
-th{font-size:.82rem;font-weight:600;color:var(--muted);cursor:pointer;user-select:none;position:sticky;top:0;background:var(--panel)}
+th{font-size:.82rem;font-weight:600;color:var(--muted);cursor:pointer;user-select:none;background:var(--panel)}
 th:first-child,td:first-child{text-align:left}
+td:first-child small{display:block;color:var(--muted);font-size:.78rem;max-width:180px;overflow:hidden;text-overflow:ellipsis}
 tr.row{cursor:pointer}
 tr.row:hover td{background:var(--chip)}
 .bar{display:inline-block;width:70px;height:8px;background:var(--chip);border-radius:4px;vertical-align:middle;margin-left:8px;overflow:hidden}
 .bar i{display:block;height:100%;background:var(--ink)}
 .up{color:var(--up)} .down{color:var(--down)}
-.sig{font-size:.8rem;font-weight:600;padding:2px 8px;border-radius:999px;background:var(--chip)}
-.sig.Strong{color:var(--up)} .sig.Weak{color:var(--down)}
+.act{font-size:.8rem;font-weight:600;padding:2px 8px;border-radius:999px;border:1px solid currentColor;white-space:nowrap}
+.act.buy{color:var(--up)} .act.sell{color:var(--down)} .act.trim{color:var(--brass)} .act.hold{color:var(--muted)}
 .flag{font-size:.75rem;color:var(--brass);margin-left:6px}
-tr.detail td{text-align:left;white-space:normal;background:var(--paper);padding:14px 16px}
 .news{list-style:none;margin:0;padding:0}
-tr.detail .news{position:sticky;left:16px;width:min(calc(100vw - 74px),980px)}
 .news li{padding:8px 0;border-bottom:1px dashed var(--line);display:flex;gap:10px;align-items:baseline}
 .news li:last-child{border-bottom:0}
 .news a{color:var(--ink);text-decoration-color:var(--line);font-family:"Newsreader",Georgia,serif;font-size:1.05rem}
@@ -62,9 +61,38 @@ tr.detail .news{position:sticky;left:16px;width:min(calc(100vw - 74px),980px)}
 .dot{flex:none;width:9px;height:9px;border-radius:50%;background:var(--muted);transform:translateY(-1px)}
 .dot.pos{background:var(--up)} .dot.neg{background:var(--down)}
 .src{color:var(--muted);font-size:.82rem;white-space:nowrap}
-.note{margin-top:40px;padding:16px 18px;border:1px solid var(--line);border-radius:4px;color:var(--muted);font-size:.9rem;max-width:75ch}
+.note{margin-top:24px;padding:16px 18px;border:1px solid var(--line);border-radius:4px;color:var(--muted);font-size:.9rem;max-width:75ch}
 .empty{padding:30px;text-align:center;color:var(--muted)}
 :focus-visible{outline:3px solid var(--brass);outline-offset:2px}
+
+dialog{border:0;padding:0;background:var(--paper);color:var(--ink);width:min(760px,100vw);max-height:92dvh;border-radius:6px;box-shadow:0 20px 60px rgba(0,0,0,.35)}
+dialog::backdrop{background:rgba(10,20,24,.55)}
+@media (max-width:640px){dialog{width:100vw;height:100dvh;max-height:none;max-width:none;margin:0;border-radius:0}}
+.dhead{position:sticky;top:0;background:var(--paper);display:flex;justify-content:space-between;align-items:flex-start;gap:12px;padding:calc(16px + env(safe-area-inset-top,0px)) 20px 12px;border-bottom:2px solid var(--ink);z-index:2}
+.dhead h3{margin:0;font:600 1.6rem/1.15 "Newsreader",Georgia,serif}
+.dhead .sub{color:var(--muted);font-size:.9rem;margin-top:2px}
+.close{font:inherit;font-size:1.5rem;line-height:1;background:none;border:1px solid var(--line);color:var(--ink);width:40px;height:40px;border-radius:50%;cursor:pointer;flex:none}
+.dbody{padding:18px 20px calc(28px + env(safe-area-inset-bottom,0px))}
+.dbody h4{font:600 1.1rem/1.2 "Newsreader",Georgia,serif;margin:26px 0 8px}
+.sigcard{border:1px solid var(--line);border-left:6px solid var(--muted);background:var(--panel);padding:14px 16px;border-radius:4px}
+.sigcard.buy{border-left-color:var(--up)} .sigcard.sell{border-left-color:var(--down)} .sigcard.trim{border-left-color:var(--brass)}
+.sigcard .big{font-size:1.5rem;font-weight:700}
+.sigcard.buy .big{color:var(--up)} .sigcard.sell .big{color:var(--down)} .sigcard.trim .big{color:var(--brass)}
+.sigcard ul{margin:8px 0 0;padding-left:18px}
+.sigcard li{margin:4px 0}
+.levels,.stats{display:grid;gap:8px}
+.levels{grid-template-columns:repeat(auto-fit,minmax(160px,1fr));margin-top:12px}
+.stats{grid-template-columns:repeat(auto-fit,minmax(130px,1fr))}
+.levels div,.stats div{background:var(--paper);border:1px solid var(--line);border-radius:4px;padding:8px 10px}
+.levels span,.stats span{display:block;color:var(--muted);font-size:.8rem}
+.levels b,.stats b{font-variant-numeric:tabular-nums}
+.chart svg{display:block;width:100%;height:180px;background:var(--panel);border:1px solid var(--line);border-radius:4px}
+.legend{font-size:.8rem;color:var(--muted);margin-top:4px}
+.range{position:relative;height:6px;background:var(--chip);border-radius:3px;margin:8px 0 4px}
+.range i{position:absolute;top:-4px;width:4px;height:14px;background:var(--ink);border-radius:2px}
+.summary{max-width:68ch;font-family:"Newsreader",Georgia,serif;font-size:1.05rem;line-height:1.6;margin:0}
+.links a{color:var(--ink);margin-right:16px}
+.fine{color:var(--muted);font-size:.82rem;margin:10px 0 0}
 </style>
 </head>
 <body>
@@ -78,87 +106,175 @@ tr.detail .news{position:sticky;left:16px;width:min(calc(100vw - 74px),980px)}
   <section class="lead" id="leaders" aria-label="Top ranked"></section>
 
   <h2>Every stock, ranked</h2>
-  <div class="controls" role="group" aria-label="Filter by signal">
+  <div class="controls" role="group" aria-label="Filter by action">
     <button aria-pressed="true" data-f="All">All</button>
-    <button aria-pressed="false" data-f="Strong">Strong</button>
-    <button aria-pressed="false" data-f="Neutral">Neutral</button>
-    <button aria-pressed="false" data-f="Weak">Weak</button>
+    <button aria-pressed="false" data-f="Buy zone">Buy zone</button>
+    <button aria-pressed="false" data-f="Hold / wait">Hold / wait</button>
+    <button aria-pressed="false" data-f="Take profits">Take profits</button>
+    <button aria-pressed="false" data-f="Sell / avoid">Sell / avoid</button>
   </div>
   <div class="tablewrap">
     <table>
       <thead><tr>
-        <th data-k="ticker">Ticker</th><th data-k="score">Score</th><th data-k="signal">Signal</th>
+        <th data-k="ticker">Stock</th><th data-k="score">Score</th><th data-k="action">Action</th>
         <th data-k="price">Price</th><th data-k="chg_1d">1 day</th><th data-k="mom_1m">1 month</th>
         <th data-k="mom_3m">3 months</th><th data-k="rsi">RSI</th><th data-k="sentiment">News tone</th>
       </tr></thead>
       <tbody id="rows"><tr><td colspan="9" class="empty">Loading…</td></tr></tbody>
     </table>
   </div>
-  <p class="meta">Tap a row to see the headlines behind its news tone.</p>
+  <p class="meta">Tap any stock to see what the company does, its buy and sell levels, and its latest news.</p>
 
   <h2>Market headlines</h2>
   <ul class="news" id="market"></ul>
 
   <div class="note">
+    <strong>How the buy and sell signals work.</strong> <em>Buy zone</em>: the stock is in an uptrend (price and
+    50‑day average above the 200‑day average) and is pulling back to its 50‑day average, dipping to oversold, or
+    showing strong momentum without being overbought. <em>Take profits</em>: RSI is 75+ or price is 15%+ above its
+    50‑day average. <em>Sell / avoid</em>: price is below both averages in a downtrend, or the stock is weak and under
+    its 50‑day average. Everything else is <em>Hold / wait</em>. The stop‑loss idea sits two average daily ranges
+    (ATR) below the price. These are mechanical chart rules that react to the past; they don't predict the future.
+  </div>
+  <div class="note">
     <strong>How the score works.</strong> Each stock is compared against the others on 3‑month and 1‑month
     price momentum, distance from its 50‑day average, and the tone of its recent headlines, with a penalty for
-    stretched RSI readings. 50 is average for this list. A high score means recent strength and upbeat coverage;
-    it does not predict future returns. This is a research aid, not financial advice. Check fundamentals,
-    valuation and your own risk tolerance before buying anything.
+    stretched RSI readings. 50 is average for this list. This is a research aid, not financial advice. Check
+    fundamentals, valuation and your own risk tolerance before buying anything.
   </div>
 </div>
+
+<dialog id="detail" aria-labelledby="dtitle"></dialog>
 
 <script>
 const pct = v => v == null ? "–" : `<span class="${v>=0?'up':'down'}">${v>0?'+':''}${v.toFixed(1)}%</span>`;
 const tone = s => s > .05 ? "pos" : s < -.05 ? "neg" : "";
 const ago = ts => { if(!ts) return ""; const h=(Date.now()/1000-ts)/3600;
   return h<1?"just now":h<24?`${Math.round(h)}h ago`:`${Math.round(h/24)}d ago`; };
-const esc = s => s.replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const esc = s => String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const actClass = a => a==="Buy zone"?"buy":a==="Sell / avoid"?"sell":a==="Take profits"?"trim":"hold";
+const money = v => v==null?"–":"$"+v.toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2});
+const bigMoney = v => v==null?"–":v>=1e12?"$"+(v/1e12).toFixed(2)+"T":v>=1e9?"$"+(v/1e9).toFixed(1)+"B":"$"+(v/1e6).toFixed(0)+"M";
+const num = (v,d=1) => v==null?"–":(+v).toFixed(d);
 
+function line(arr, mn, mx, w, h, pad){
+  return arr.map((p,i)=>p==null?null:`${(i/(arr.length-1)*w).toFixed(1)},${(h-pad-(p-mn)/(mx-mn||1)*(h-2*pad)).toFixed(1)}`).filter(Boolean).join(" ");
+}
 function spark(pts){
-  const mn=Math.min(...pts), mx=Math.max(...pts), w=240, h=46;
-  const d=pts.map((p,i)=>`${(i/(pts.length-1)*w).toFixed(1)},${(h-3-(p-mn)/(mx-mn||1)*(h-6)).toFixed(1)}`).join(" ");
+  if(!pts.length) return "";
+  const mn=Math.min(...pts), mx=Math.max(...pts);
   const col = pts.at(-1)>=pts[0] ? "var(--up)" : "var(--down)";
-  return `<svg viewBox="0 0 ${w} ${h}" preserveAspectRatio="none" aria-hidden="true"><polyline fill="none" stroke="${col}" stroke-width="2" points="${d}"/></svg>`;
+  return `<svg viewBox="0 0 240 46" preserveAspectRatio="none" aria-hidden="true"><polyline fill="none" stroke="${col}" stroke-width="2" points="${line(pts,mn,mx,240,46,3)}"/></svg>`;
+}
+function bigChart(px, ma){
+  if(!px.length) return "";
+  const all=[...px,...ma.filter(x=>x!=null)], mn=Math.min(...all), mx=Math.max(...all);
+  const col = px.at(-1)>=px[0] ? "var(--up)" : "var(--down)";
+  return `<svg viewBox="0 0 600 180" preserveAspectRatio="none" role="img" aria-label="Six month price chart">
+    <polyline fill="none" stroke="var(--muted)" stroke-width="1.5" stroke-dasharray="5 4" points="${line(ma,mn,mx,600,180,8)}"/>
+    <polyline fill="none" stroke="${col}" stroke-width="2.2" points="${line(px,mn,mx,600,180,8)}"/></svg>`;
 }
 function newsList(items){
-  if(!items.length) return `<li class="meta">No headlines in the last 7 days.</li>`;
+  if(!items || !items.length) return `<li class="meta">No headlines in the last 7 days.</li>`;
   return items.map(n=>`<li><span class="dot ${tone(n.sentiment)}" title="tone ${n.sentiment}"></span>
     <span><a href="${esc(n.link)}" target="_blank" rel="noopener">${esc(n.title)}</a>
     <span class="src"> ${esc(n.source)} ${ago(n.time)}</span></span></li>`).join("");
 }
 
-let data, sortKey="score", asc=false, filter="All", open=null;
+let data, sortKey="score", asc=false, filter="All";
 
 function renderTable(){
-  let rows = data.stocks.filter(s => filter==="All" || s.signal===filter);
+  let rows = data.stocks.filter(s => filter==="All" || s.action===filter);
   rows.sort((a,b)=>{const x=a[sortKey],y=b[sortKey]; return (x>y?1:x<y?-1:0)*(asc?1:-1);});
   document.getElementById("rows").innerHTML = rows.length ? rows.map(s=>`
-    <tr class="row" tabindex="0" data-t="${s.ticker}" aria-expanded="${open===s.ticker}">
-      <td><strong>${s.ticker}</strong>${s.flags.map(f=>`<span class="flag">${f}</span>`).join("")}</td>
+    <tr class="row" tabindex="0" data-t="${s.ticker}">
+      <td><strong>${s.ticker}</strong>${s.flags.map(f=>`<span class="flag">${f}</span>`).join("")}
+        <small>${esc((s.profile||{}).name||"")}</small></td>
       <td>${s.score.toFixed(0)}<span class="bar"><i style="width:${s.score}%"></i></span></td>
-      <td><span class="sig ${s.signal}">${s.signal}</span></td>
-      <td>$${s.price.toLocaleString(undefined,{minimumFractionDigits:2})}</td>
+      <td><span class="act ${actClass(s.action)}">${s.action||"–"}</span></td>
+      <td>${money(s.price)}</td>
       <td>${pct(s.chg_1d)}</td><td>${pct(s.mom_1m)}</td><td>${pct(s.mom_3m)}</td>
       <td>${s.rsi.toFixed(0)}</td><td>${pct(s.sentiment*100).replace('%','')}</td>
-    </tr>${open===s.ticker?`<tr class="detail"><td colspan="9"><ul class="news">${newsList(s.news)}</ul></td></tr>`:""}`).join("")
-    : `<tr><td colspan="9" class="empty">No stocks with a ${filter} signal right now.</td></tr>`;
+    </tr>`).join("")
+    : `<tr><td colspan="9" class="empty">No stocks in “${filter}” right now.</td></tr>`;
+}
+
+function openDetail(t){
+  const s=data.stocks.find(x=>x.ticker===t); if(!s) return;
+  const p=s.profile||{}, L=s.levels||{}, c=actClass(s.action);
+  const pos = s.high52>s.low52 ? Math.min(100,Math.max(0,(s.price-s.low52)/(s.high52-s.low52)*100)) : 50;
+  const sub=[p.sector,p.industry].filter(Boolean).join(", ") || p.category || (p.type==="ETF"?"Exchange-traded fund":"");
+  const long = p.summary && p.summary.length>700;
+  const sum = p.summary ? esc(long ? p.summary.slice(0,700)+"…" : p.summary) : "No company description available yet.";
+  const dlg=document.getElementById("detail");
+  dlg.innerHTML=`
+    <div class="dhead"><div><h3 id="dtitle">${esc(p.name||s.ticker)}</h3>
+      <div class="sub">${s.ticker}${sub?" · "+esc(sub):""}</div></div>
+      <button class="close" aria-label="Close">×</button></div>
+    <div class="dbody">
+      <div class="sigcard ${c}">
+        <span class="meta">Signal today</span>
+        <div class="big">${s.action||"–"}</div>
+        <ul>${(s.reasons||[]).map(r=>`<li>${esc(r)}</li>`).join("")}</ul>
+        <div class="levels">
+          <div><span>Buy area (near 50‑day average)</span><b>${money(L.entry_low)} to ${money(L.entry_high)}</b></div>
+          <div><span>Stop‑loss idea</span><b>${money(L.stop)}</b></div>
+          <div><span>Consider trimming above</span><b>${money(L.trim)}</b></div>
+        </div>
+        <p class="fine">Mechanical chart rules, not advice. Prices move after each update.</p>
+      </div>
+
+      <h4>Last 6 months</h4>
+      <div class="chart">${bigChart(s.chart||[], s.chart_ma50||[])}</div>
+      <div class="legend">Solid line is price. Dashed line is the 50‑day average.</div>
+
+      <h4>Key numbers</h4>
+      <div class="stats">
+        <div><span>Price</span><b>${money(s.price)}</b></div>
+        <div><span>Today</span><b>${pct(s.chg_1d)}</b></div>
+        <div><span>${p.type==="ETF"?"Fund size":"Market cap"}</span><b>${bigMoney(p.market_cap||p.fund_assets)}</b></div>
+        <div><span>P/E (trailing)</span><b>${num(p.pe)}</b></div>
+        <div><span>P/E (forward)</span><b>${num(p.fwd_pe)}</b></div>
+        <div><span>Dividend yield</span><b>${p.div_yield!=null?num(p.div_yield,2)+"%":"–"}</b></div>
+        <div><span>Score</span><b>${s.score.toFixed(0)} / 100</b></div>
+        <div><span>RSI</span><b>${num(s.rsi,0)}</b></div>
+        <div><span>50‑day average</span><b>${money(s.ma50)}</b></div>
+        <div><span>200‑day average</span><b>${money(s.ma200)}</b></div>
+      </div>
+      <div style="margin-top:12px"><span class="meta">52‑week range ${money(s.low52)} to ${money(s.high52)}</span>
+        <div class="range"><i style="left:calc(${pos.toFixed(1)}% - 2px)"></i></div></div>
+
+      <h4>What they do</h4>
+      <p class="summary" id="sum">${sum}</p>
+      ${long?`<button class="close" id="more" style="width:auto;height:auto;border-radius:999px;font-size:.9rem;padding:4px 12px;margin-top:8px">Read more</button>`:""}
+      <p class="links">${p.website?`<a href="${esc(p.website)}" target="_blank" rel="noopener">Company website</a>`:""}
+        <a href="https://finance.yahoo.com/quote/${s.ticker}" target="_blank" rel="noopener">Full quote on Yahoo Finance</a></p>
+
+      <h4>Recent news</h4>
+      <ul class="news">${newsList(s.news)}</ul>
+    </div>`;
+  dlg.querySelector(".dhead .close").onclick=()=>dlg.close();
+  const more=dlg.querySelector("#more");
+  if(more) more.onclick=()=>{ dlg.querySelector("#sum").textContent=p.summary; more.remove(); };
+  dlg.showModal(); dlg.scrollTop=0;
 }
 
 function render(){
   const u = new Date(data.updated);
   document.getElementById("updated").textContent = `Updated ${u.toLocaleString([], {dateStyle:"medium", timeStyle:"short"})}`;
   const m = data.market_mood, word = m>.05?"upbeat":m<-.05?"downbeat":"mixed";
-  const strong = data.stocks.filter(s=>s.signal==="Strong").length;
+  const buys = data.stocks.filter(s=>s.action==="Buy zone").length;
   document.getElementById("mood").innerHTML =
-    `Market headlines read <b>${word}</b> today. <b>${strong}</b> of ${data.stocks.length} tracked stocks show a strong signal.`;
+    `Market headlines read <b>${word}</b> today. <b>${buys}</b> of ${data.stocks.length} tracked stocks are in a buy zone by these rules.`;
   document.getElementById("leaders").innerHTML = data.stocks.slice(0,3).map((s,i)=>`
-    <article class="leader">
+    <article class="leader" data-t="${s.ticker}" tabindex="0">
       <div class="sc">${s.score.toFixed(0)}</div>
       <div class="rank">Ranked ${i+1}</div>
       <div class="tk">${s.ticker}</div>
-      ${spark(s.spark)}
-      <div class="why">${s.mom_3m>0?'+':''}${s.mom_3m?.toFixed(1)}% over 3 months, news tone ${s.sentiment>=0?'positive':'negative'}${s.flags.length?', '+s.flags.join(', ').toLowerCase():''}</div>
+      <div class="nm">${esc((s.profile||{}).name||"")}</div>
+      ${spark((s.chart||[]).slice(-60))}
+      <div class="why"><span class="act ${actClass(s.action)}">${s.action||"–"}</span>
+        ${s.mom_3m>0?'+':''}${s.mom_3m?.toFixed(1)}% over 3 months</div>
     </article>`).join("");
   document.getElementById("market").innerHTML = newsList(data.market_news.slice(0,15));
   renderTable();
@@ -166,16 +282,20 @@ function render(){
 
 document.querySelector("thead").addEventListener("click", e=>{
   const k=e.target.dataset.k; if(!k) return;
-  asc = sortKey===k ? !asc : k==="ticker"; sortKey=k; renderTable();
+  asc = sortKey===k ? !asc : (k==="ticker"||k==="action"); sortKey=k; renderTable();
 });
 document.querySelector(".controls").addEventListener("click", e=>{
   if(!e.target.dataset.f) return; filter=e.target.dataset.f;
   document.querySelectorAll(".controls button").forEach(b=>b.setAttribute("aria-pressed", b===e.target));
   renderTable();
 });
-const toggle = tr => { if(!tr) return; open = open===tr.dataset.t ? null : tr.dataset.t; renderTable(); };
-document.getElementById("rows").addEventListener("click", e=>toggle(e.target.closest("tr.row")));
-document.getElementById("rows").addEventListener("keydown", e=>{ if(e.key==="Enter"||e.key===" "){e.preventDefault();toggle(e.target.closest("tr.row"));}});
+const pick = el => { const t=el && el.closest("[data-t]"); if(t) openDetail(t.dataset.t); };
+for (const id of ["rows","leaders"]) {
+  const el=document.getElementById(id);
+  el.addEventListener("click", e=>pick(e.target));
+  el.addEventListener("keydown", e=>{ if(e.key==="Enter"||e.key===" "){ e.preventDefault(); pick(e.target); }});
+}
+document.getElementById("detail").addEventListener("click", e=>{ if(e.target.id==="detail") e.target.close(); });
 
 fetch("data.json?"+Date.now()).then(r=>{ if(!r.ok) throw 0; return r.json(); })
   .then(d=>{data=d; render();})
