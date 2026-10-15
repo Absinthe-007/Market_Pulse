@@ -1,0 +1,187 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Market Pulse</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📈</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=Newsreader:opsz,wght@6..72,400;6..72,600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#F3F6F4; --panel:#FFFFFF; --ink:#17323A; --muted:#5D7178; --line:#D6DFDC;
+  --up:#2E7D5B; --down:#B5473A; --brass:#A87A14; --chip:#E7EEEB;
+  color-scheme:light;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme:dark){
+  :root{--paper:#0F1C20; --panel:#16272C; --ink:#E4ECE9; --muted:#93A6AB; --line:#2A3E44;
+    --up:#5FC193; --down:#E57D70; --brass:#D9AE4A; --chip:#203439; color-scheme:dark}
+}
+*,*::before,*::after{box-sizing:inherit}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--paper);color:var(--ink);font:400 16px/1.5 "Instrument Sans",system-ui,-apple-system,"Segoe UI",sans-serif}
+.wrap{max-width:1040px;margin:0 auto;padding:28px 20px 60px}
+header{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:baseline;gap:8px 24px;border-bottom:2px solid var(--ink);padding-bottom:14px}
+h1{font:600 2.1rem/1.1 "Newsreader",Georgia,serif;margin:0;letter-spacing:-.01em}
+.meta{color:var(--muted);font-size:.9rem}
+.mood{margin:22px 0 6px;font:400 1.35rem/1.35 "Newsreader",Georgia,serif;max-width:62ch}
+.mood b{font-weight:600}
+.lead{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px;margin:22px 0 36px}
+.leader{background:var(--panel);border:1px solid var(--line);border-left:6px solid var(--up);padding:16px 18px;border-radius:4px}
+.leader .rank{color:var(--muted);font-size:.85rem}
+.leader .tk{font-size:1.9rem;font-weight:700;letter-spacing:.01em}
+.leader .sc{float:right;font-size:2.4rem;font-weight:700;color:var(--up);line-height:1}
+.leader svg{display:block;width:100%;height:46px;margin-top:8px}
+.leader .why{font-size:.9rem;color:var(--muted);margin-top:6px}
+h2{font:600 1.35rem/1.2 "Newsreader",Georgia,serif;margin:36px 0 12px}
+.controls{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px}
+.controls button{font:inherit;font-size:.9rem;border:1px solid var(--line);background:var(--panel);color:var(--ink);padding:6px 12px;border-radius:999px;cursor:pointer}
+.controls button[aria-pressed="true"]{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.tablewrap{overflow-x:auto;background:var(--panel);border:1px solid var(--line);border-radius:4px}
+table{width:100%;border-collapse:collapse;min-width:720px;font-variant-numeric:tabular-nums}
+th,td{padding:10px 12px;text-align:right;border-bottom:1px solid var(--line);white-space:nowrap}
+th{font-size:.82rem;font-weight:600;color:var(--muted);cursor:pointer;user-select:none;position:sticky;top:0;background:var(--panel)}
+th:first-child,td:first-child{text-align:left}
+tr.row{cursor:pointer}
+tr.row:hover td{background:var(--chip)}
+.bar{display:inline-block;width:70px;height:8px;background:var(--chip);border-radius:4px;vertical-align:middle;margin-left:8px;overflow:hidden}
+.bar i{display:block;height:100%;background:var(--ink)}
+.up{color:var(--up)} .down{color:var(--down)}
+.sig{font-size:.8rem;font-weight:600;padding:2px 8px;border-radius:999px;background:var(--chip)}
+.sig.Strong{color:var(--up)} .sig.Weak{color:var(--down)}
+.flag{font-size:.75rem;color:var(--brass);margin-left:6px}
+tr.detail td{text-align:left;white-space:normal;background:var(--paper);padding:14px 16px}
+.news{list-style:none;margin:0;padding:0}
+tr.detail .news{position:sticky;left:16px;width:min(calc(100vw - 74px),980px)}
+.news li{padding:8px 0;border-bottom:1px dashed var(--line);display:flex;gap:10px;align-items:baseline}
+.news li:last-child{border-bottom:0}
+.news a{color:var(--ink);text-decoration-color:var(--line);font-family:"Newsreader",Georgia,serif;font-size:1.05rem}
+.news a:hover{text-decoration-color:currentColor}
+.dot{flex:none;width:9px;height:9px;border-radius:50%;background:var(--muted);transform:translateY(-1px)}
+.dot.pos{background:var(--up)} .dot.neg{background:var(--down)}
+.src{color:var(--muted);font-size:.82rem;white-space:nowrap}
+.note{margin-top:40px;padding:16px 18px;border:1px solid var(--line);border-radius:4px;color:var(--muted);font-size:.9rem;max-width:75ch}
+.empty{padding:30px;text-align:center;color:var(--muted)}
+:focus-visible{outline:3px solid var(--brass);outline-offset:2px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>Market Pulse</h1>
+    <span class="meta" id="updated">Loading data…</span>
+  </header>
+
+  <p class="mood" id="mood"></p>
+  <section class="lead" id="leaders" aria-label="Top ranked"></section>
+
+  <h2>Every stock, ranked</h2>
+  <div class="controls" role="group" aria-label="Filter by signal">
+    <button aria-pressed="true" data-f="All">All</button>
+    <button aria-pressed="false" data-f="Strong">Strong</button>
+    <button aria-pressed="false" data-f="Neutral">Neutral</button>
+    <button aria-pressed="false" data-f="Weak">Weak</button>
+  </div>
+  <div class="tablewrap">
+    <table>
+      <thead><tr>
+        <th data-k="ticker">Ticker</th><th data-k="score">Score</th><th data-k="signal">Signal</th>
+        <th data-k="price">Price</th><th data-k="chg_1d">1 day</th><th data-k="mom_1m">1 month</th>
+        <th data-k="mom_3m">3 months</th><th data-k="rsi">RSI</th><th data-k="sentiment">News tone</th>
+      </tr></thead>
+      <tbody id="rows"><tr><td colspan="9" class="empty">Loading…</td></tr></tbody>
+    </table>
+  </div>
+  <p class="meta">Tap a row to see the headlines behind its news tone.</p>
+
+  <h2>Market headlines</h2>
+  <ul class="news" id="market"></ul>
+
+  <div class="note">
+    <strong>How the score works.</strong> Each stock is compared against the others on 3‑month and 1‑month
+    price momentum, distance from its 50‑day average, and the tone of its recent headlines, with a penalty for
+    stretched RSI readings. 50 is average for this list. A high score means recent strength and upbeat coverage;
+    it does not predict future returns. This is a research aid, not financial advice. Check fundamentals,
+    valuation and your own risk tolerance before buying anything.
+  </div>
+</div>
+
+<script>
+const pct = v => v == null ? "–" : `<span class="${v>=0?'up':'down'}">${v>0?'+':''}${v.toFixed(1)}%</span>`;
+const tone = s => s > .05 ? "pos" : s < -.05 ? "neg" : "";
+const ago = ts => { if(!ts) return ""; const h=(Date.now()/1000-ts)/3600;
+  return h<1?"just now":h<24?`${Math.round(h)}h ago`:`${Math.round(h/24)}d ago`; };
+const esc = s => s.replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+
+function spark(pts){
+  const mn=Math.min(...pts), mx=Math.max(...pts), w=240, h=46;
+  const d=pts.map((p,i)=>`${(i/(pts.length-1)*w).toFixed(1)},${(h-3-(p-mn)/(mx-mn||1)*(h-6)).toFixed(1)}`).join(" ");
+  const col = pts.at(-1)>=pts[0] ? "var(--up)" : "var(--down)";
+  return `<svg viewBox="0 0 ${w} ${h}" preserveAspectRatio="none" aria-hidden="true"><polyline fill="none" stroke="${col}" stroke-width="2" points="${d}"/></svg>`;
+}
+function newsList(items){
+  if(!items.length) return `<li class="meta">No headlines in the last 7 days.</li>`;
+  return items.map(n=>`<li><span class="dot ${tone(n.sentiment)}" title="tone ${n.sentiment}"></span>
+    <span><a href="${esc(n.link)}" target="_blank" rel="noopener">${esc(n.title)}</a>
+    <span class="src"> ${esc(n.source)} ${ago(n.time)}</span></span></li>`).join("");
+}
+
+let data, sortKey="score", asc=false, filter="All", open=null;
+
+function renderTable(){
+  let rows = data.stocks.filter(s => filter==="All" || s.signal===filter);
+  rows.sort((a,b)=>{const x=a[sortKey],y=b[sortKey]; return (x>y?1:x<y?-1:0)*(asc?1:-1);});
+  document.getElementById("rows").innerHTML = rows.length ? rows.map(s=>`
+    <tr class="row" tabindex="0" data-t="${s.ticker}" aria-expanded="${open===s.ticker}">
+      <td><strong>${s.ticker}</strong>${s.flags.map(f=>`<span class="flag">${f}</span>`).join("")}</td>
+      <td>${s.score.toFixed(0)}<span class="bar"><i style="width:${s.score}%"></i></span></td>
+      <td><span class="sig ${s.signal}">${s.signal}</span></td>
+      <td>$${s.price.toLocaleString(undefined,{minimumFractionDigits:2})}</td>
+      <td>${pct(s.chg_1d)}</td><td>${pct(s.mom_1m)}</td><td>${pct(s.mom_3m)}</td>
+      <td>${s.rsi.toFixed(0)}</td><td>${pct(s.sentiment*100).replace('%','')}</td>
+    </tr>${open===s.ticker?`<tr class="detail"><td colspan="9"><ul class="news">${newsList(s.news)}</ul></td></tr>`:""}`).join("")
+    : `<tr><td colspan="9" class="empty">No stocks with a ${filter} signal right now.</td></tr>`;
+}
+
+function render(){
+  const u = new Date(data.updated);
+  document.getElementById("updated").textContent = `Updated ${u.toLocaleString([], {dateStyle:"medium", timeStyle:"short"})}`;
+  const m = data.market_mood, word = m>.05?"upbeat":m<-.05?"downbeat":"mixed";
+  const strong = data.stocks.filter(s=>s.signal==="Strong").length;
+  document.getElementById("mood").innerHTML =
+    `Market headlines read <b>${word}</b> today. <b>${strong}</b> of ${data.stocks.length} tracked stocks show a strong signal.`;
+  document.getElementById("leaders").innerHTML = data.stocks.slice(0,3).map((s,i)=>`
+    <article class="leader">
+      <div class="sc">${s.score.toFixed(0)}</div>
+      <div class="rank">Ranked ${i+1}</div>
+      <div class="tk">${s.ticker}</div>
+      ${spark(s.spark)}
+      <div class="why">${s.mom_3m>0?'+':''}${s.mom_3m?.toFixed(1)}% over 3 months, news tone ${s.sentiment>=0?'positive':'negative'}${s.flags.length?', '+s.flags.join(', ').toLowerCase():''}</div>
+    </article>`).join("");
+  document.getElementById("market").innerHTML = newsList(data.market_news.slice(0,15));
+  renderTable();
+}
+
+document.querySelector("thead").addEventListener("click", e=>{
+  const k=e.target.dataset.k; if(!k) return;
+  asc = sortKey===k ? !asc : k==="ticker"; sortKey=k; renderTable();
+});
+document.querySelector(".controls").addEventListener("click", e=>{
+  if(!e.target.dataset.f) return; filter=e.target.dataset.f;
+  document.querySelectorAll(".controls button").forEach(b=>b.setAttribute("aria-pressed", b===e.target));
+  renderTable();
+});
+const toggle = tr => { if(!tr) return; open = open===tr.dataset.t ? null : tr.dataset.t; renderTable(); };
+document.getElementById("rows").addEventListener("click", e=>toggle(e.target.closest("tr.row")));
+document.getElementById("rows").addEventListener("keydown", e=>{ if(e.key==="Enter"||e.key===" "){e.preventDefault();toggle(e.target.closest("tr.row"));}});
+
+fetch("data.json?"+Date.now()).then(r=>{ if(!r.ok) throw 0; return r.json(); })
+  .then(d=>{data=d; render();})
+  .catch(()=>{ document.getElementById("rows").innerHTML =
+    `<tr><td colspan="9" class="empty">No data yet. Open the Actions tab on GitHub and run "Update market data".</td></tr>`;
+    document.getElementById("updated").textContent="Waiting for first run"; });
+</script>
+</body>
+</html>
