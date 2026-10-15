@@ -163,13 +163,13 @@ function line(arr, mn, mx, w, h, pad){
 function spark(pts){
   if(!pts.length) return "";
   const mn=Math.min(...pts), mx=Math.max(...pts);
-  const col = pts.at(-1)>=pts[0] ? "var(--up)" : "var(--down)";
+  const col = pts[pts.length-1]>=pts[0] ? "var(--up)" : "var(--down)";
   return `<svg viewBox="0 0 240 46" preserveAspectRatio="none" aria-hidden="true"><polyline fill="none" stroke="${col}" stroke-width="2" points="${line(pts,mn,mx,240,46,3)}"/></svg>`;
 }
 function bigChart(px, ma){
   if(!px.length) return "";
   const all=[...px,...ma.filter(x=>x!=null)], mn=Math.min(...all), mx=Math.max(...all);
-  const col = px.at(-1)>=px[0] ? "var(--up)" : "var(--down)";
+  const col = px[px.length-1]>=px[0] ? "var(--up)" : "var(--down)";
   return `<svg viewBox="0 0 600 180" preserveAspectRatio="none" role="img" aria-label="Six month price chart">
     <polyline fill="none" stroke="var(--muted)" stroke-width="1.5" stroke-dasharray="5 4" points="${line(ma,mn,mx,600,180,8)}"/>
     <polyline fill="none" stroke="${col}" stroke-width="2.2" points="${line(px,mn,mx,600,180,8)}"/></svg>`;
@@ -217,8 +217,8 @@ function openDetail(t){
         <div class="big">${s.action||"–"}</div>
         <ul>${(s.reasons||[]).map(r=>`<li>${esc(r)}</li>`).join("")}</ul>
         <div class="levels">
-          <div><span>Buy area (near 50‑day average)</span><b>${money(L.entry_low)} to ${money(L.entry_high)}</b></div>
-          <div><span>Stop‑loss idea</span><b>${money(L.stop)}</b></div>
+          <div><span>${({"Buy zone":"Buy area","Take profits":"Better entry near","Sell / avoid":"Gets interesting again above"})[s.action]||"Wait to buy near"}</span><b>${money(L.entry_low)} to ${money(L.entry_high)}</b></div>
+          <div><span>${s.action==="Buy zone"?"Stop‑loss idea":"Stop‑loss if you own it"}</span><b>${money(L.stop)}</b></div>
           <div><span>Consider trimming above</span><b>${money(L.trim)}</b></div>
         </div>
         <p class="fine">Mechanical chart rules, not advice. Prices move after each update.</p>
@@ -253,10 +253,10 @@ function openDetail(t){
       <h4>Recent news</h4>
       <ul class="news">${newsList(s.news)}</ul>
     </div>`;
-  dlg.querySelector(".dhead .close").onclick=()=>dlg.close();
+  dlg.querySelector(".dhead .close").onclick=()=>dlg.close ? dlg.close() : dlg.removeAttribute("open");
   const more=dlg.querySelector("#more");
   if(more) more.onclick=()=>{ dlg.querySelector("#sum").textContent=p.summary; more.remove(); };
-  dlg.showModal(); dlg.scrollTop=0;
+  if(dlg.showModal) dlg.showModal(); else dlg.setAttribute("open",""); dlg.scrollTop=0;
 }
 
 function render(){
