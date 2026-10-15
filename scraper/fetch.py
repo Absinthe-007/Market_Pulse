@@ -196,11 +196,19 @@ def trade_signal(r):
 
     r["action"] = action
     r["reasons"] = reasons
-    r["levels"] = {
-        "entry_low": round(ma50 * 0.98, 2), "entry_high": round(ma50 * 1.02, 2),
-        "stop": round(max(p - 2 * r["atr"], 0), 2),
-        "trim": round(ma50 * 1.15, 2),
-    }
+    atr = r["atr"]
+    if action == "Buy zone":
+        # buying is fine now: from today's price down to one day's range (not below the 50-day)
+        entry_high = p
+        entry_low = p - atr if p <= ma50 else max(ma50, p - atr)
+        stop = entry_low - 1.5 * atr                  # below the buy area
+    else:
+        # wait for a pullback to (or, in a downtrend, a recovery above) the 50-day average
+        entry_high, entry_low = ma50 * 1.02, ma50 * 0.98
+        stop = p - 2 * atr                            # for anyone already holding it
+    trim = max(ma50 * 1.15, entry_high + 2 * atr, p + 2 * atr)
+    r["levels"] = {"entry_low": round(entry_low, 2), "entry_high": round(entry_high, 2),
+                   "stop": round(max(stop, 0), 2), "trim": round(trim, 2)}
 
 
 def zscores(values):
