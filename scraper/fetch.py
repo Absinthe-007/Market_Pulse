@@ -78,13 +78,27 @@ def parse_feed(url, source, limit=20):
     return items
 
 
+def history(t, tries=3):
+    for i in range(tries):
+        try:
+            df = yf.Ticker(t).history(period="6mo", interval="1d", auto_adjust=True)
+            if len(df):
+                return df
+        except Exception as ex:
+            print(f"  retry {t} ({ex})")
+        time.sleep(3 * (i + 1))
+    return None
+
+
 def price_metrics(tickers):
-    data = yf.download(tickers, period="6mo", interval="1d", group_by="ticker",
-                       auto_adjust=True, progress=False, threads=True)
     out = {}
     for t in tickers:
         try:
-            df = data[t] if len(tickers) > 1 else data
+            df = history(t)
+            time.sleep(0.5)
+            if df is None:
+                print(f"  no price data for {t}")
+                continue
             close = df["Close"].dropna()
             vol = df["Volume"].dropna()
             if len(close) < 60:
@@ -161,6 +175,10 @@ def main():
         market += parse_feed(url, name, limit=15)
     market.sort(key=lambda n: n["time"] or 0, reverse=True)
     mood = round(float(np.mean([n["sentiment"] for n in market])), 3) if market else 0.0
+
+    if not rows:
+        print("No price data came back; keeping the previous data.json")
+        return
 
     OUT_FILE.write_text(json.dumps({
         "updated": dt.datetime.now(dt.timezone.utc).isoformat(timespec="minutes"),
