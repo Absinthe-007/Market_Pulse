@@ -1,0 +1,27 @@
+# One ticker per line. Edit freely.
+AAPL
+MSFT
+NVDA
+AMZN
+GOOGL
+META
+TSLA
+AVGO
+AMD
+JPM
+V
+MA
+UNH
+LLY
+XOM
+CVX
+COST
+WMT
+HD
+NFLX
+CRM
+ORCL
+PLTR
+COIN
+SPY
+QQQ
